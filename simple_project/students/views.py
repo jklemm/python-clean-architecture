@@ -26,11 +26,16 @@ class StudentsAddView(View):
 
         if form.is_valid():
             name = form.cleaned_data.get('name')
-            age = form.cleaned_data.get('age')
-            Student.objects.create(
-                name=name,
-                age=age
-            )
+            age = int(form.cleaned_data.get('age'))
+
+            if 18 <= age <= 60:
+                Student.objects.create(
+                    name=name,
+                    age=age
+                )
+            else:
+                form.add_error('age', 'The age needs to be greater or equal than 18 and lower or equal than 60!')
+                return render(request, 'add.html', {'form': form})
         else:
             return render(request, 'add.html', {'form': form})
 
