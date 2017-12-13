@@ -2,6 +2,9 @@ from django.shortcuts import render, redirect
 from django.urls.base import reverse
 from django.views.generic.base import View
 
+from core.structs.student_struct import StudentStruct
+from core.usecases.create_student_usecase import CreateStudentUsecase
+from gateways.student_gateway_django import StudentGatewayDjango
 from students.forms import AddStudentForm
 from students.models import Student
 
@@ -27,10 +30,17 @@ class StudentsAddView(View):
         if form.is_valid():
             name = form.cleaned_data.get('name')
             age = form.cleaned_data.get('age')
-            Student.objects.create(
+
+            struct = StudentStruct(
                 name=name,
                 age=age
             )
+
+            usecase = CreateStudentUsecase(
+                student_gateway=StudentGatewayDjango()
+            )
+            usecase.execute(struct)
+
         else:
             return render(request, 'add.html', {'form': form})
 
