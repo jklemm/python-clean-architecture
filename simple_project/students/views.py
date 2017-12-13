@@ -5,14 +5,15 @@ from django.views.generic.base import View
 from core.structs.student_struct import StudentStruct
 from core.usecases.create_student_usecase import CreateStudentUsecase
 from gateways.student_gateway_django import StudentGatewayDjango
+from presenters.student_presenter import StudentPresenter
 from students.forms import AddStudentForm
-from students.models import Student
 
 
 class StudentsView(View):
 
     def get(self, request, *args, **kwargs):
-        students = Student.objects.all()
+        student_gateway = StudentGatewayDjango()
+        students = student_gateway.get_all()
         return render(request, 'manage.html', {'students': students})
 
 
@@ -36,10 +37,18 @@ class StudentsAddView(View):
                 age=age
             )
 
+            presenter = StudentPresenter()
+
             usecase = CreateStudentUsecase(
-                student_gateway=StudentGatewayDjango()
+                student_gateway=StudentGatewayDjango(),
+                presenter=presenter
             )
-            usecase.execute(struct)
+            presenter = usecase.execute(struct)
+            
+            if presenter:
+                for error in presenter.get_errors():
+                    form.add_error(error['field'], error['message'])
+                return render(request, 'add.html', {'form': form})
 
         else:
             return render(request, 'add.html', {'form': form})

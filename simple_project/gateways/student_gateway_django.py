@@ -8,3 +8,6 @@ class StudentGatewayDjango(StudentGateway):
             name=student_struct.name,
             age=student_struct.age
         )
+
+    def get_all(self):
+        return Student.objects.all()
