@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students :: Manage</title>
+</head>
+<body>
+
+<a href="{% url 'students_add' %}">Adicionar</a>
+
+<h3>Students</h3>
+
+{% if students %}
+    <ul>
+    {% for student in students %}
+        <li>{{ student }}</li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No students are available.</p>
+{% endif %}
+
+</body>
+</html>
