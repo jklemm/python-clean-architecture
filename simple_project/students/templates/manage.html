@@ -13,7 +13,7 @@
 {% if students %}
     <ul>
     {% for student in students %}
-        <li>{{ student }}</li>
+        <li>{{ student.name }} - {{ student.age }}</li>
     {% endfor %}
     </ul>
 {% else %}
